@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\CommunityController;
-use App\Http\Controllers\MatchController;
-use App\Http\Controllers\TeamController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
