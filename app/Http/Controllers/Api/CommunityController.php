@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Community;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Hashids;
 
 class CommunityController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 
+     * @Query
+     * @return Community[]
      */
-    public function index()
+    public function communities(): \Illuminate\Database\Eloquent\Collection
     {
         return Community::get();
     }
@@ -31,12 +35,11 @@ class CommunityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Community  $community
-     * @return \Illuminate\Http\Response
+     * @Query
      */
-    public function show($id)
+    public function community(string $id): ?Community
     {
-        $community = Community::findOrFail($id);
+        $community = Community::find(Hashids::decode($id))->first();
         return $community;
     }
 

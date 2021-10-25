@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Match;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MatchController extends Controller
 {
@@ -34,7 +35,7 @@ class MatchController extends Controller
      * @param  \App\Models\Match  $match
      * @return \Illuminate\Http\Response
      */
-    public function show(Match $match)
+    public function show()
     {
         //
     }
@@ -46,7 +47,7 @@ class MatchController extends Controller
      * @param  \App\Models\Match  $match
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Match $match)
+    public function update(Request $request)
     {
         //
     }
@@ -57,7 +58,7 @@ class MatchController extends Controller
      * @param  \App\Models\Match  $match
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Match $match)
+    public function destroy()
     {
         //
     }

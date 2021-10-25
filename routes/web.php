@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    dd(Hashids::encode(3), Hashids::decode('jXZPJyEBJp'));
     return view('welcome');
 });
