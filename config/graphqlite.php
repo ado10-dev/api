@@ -16,7 +16,7 @@ return [
      | You can put a single namespace, or an array of namespaces.
      |
      */
-    'controllers' => 'App\\Http\\Controllers\\Api',
+    'controllers' => 'App\\Resolvers',
     'types' => 'App\\',
     'debug' => Debug::RETHROW_UNSAFE_EXCEPTIONS,
     'uri' => env('GRAPHQLITE_URI', '/graphql'),

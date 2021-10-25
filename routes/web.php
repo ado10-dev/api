@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Community;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd(Hashids::encode(3), Hashids::decode('jXZPJyEBJp'));
+    dd(
+        Community::find(2)->teams->toArray()
+    );
     return view('welcome');
 });

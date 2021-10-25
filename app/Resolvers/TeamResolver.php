@@ -1,20 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Resolvers;
 
+use Hashids;
 use App\Models\Team;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class TeamResolver
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 
+     * @Query
+     * @return Team[]
      */
-    public function index()
+    public function teams(string $communityId): \Illuminate\Database\Eloquent\Collection
     {
-        //
+        $decodedId = Hashids::decode($communityId);
+        return Team::where('community_id', $decodedId)->get();
     }
 
     /**
@@ -31,12 +35,12 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Team  $team
-     * @return \Illuminate\Http\Response
+     * @Query
      */
-    public function show(Team $team)
+    public function team(string $id): ?Team
     {
-        //
+        $decodedId = Hashids::decode($id);
+        return Team::find($decodedId)->first();
     }
 
     /**

@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Resolvers;
 
+use Hashids;
 use App\Models\Community;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Hashids;
 
-class CommunityController extends Controller
+class CommunityResolver
 {
     /**
      * Display a listing of the resource.
@@ -39,8 +38,8 @@ class CommunityController extends Controller
      */
     public function community(string $id): ?Community
     {
-        $community = Community::find(Hashids::decode($id))->first();
-        return $community;
+        $decodedId = Hashids::decode($id);
+        return Community::find($decodedId)->first();
     }
 
     /**
