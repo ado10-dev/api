@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Community;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd(
-        Community::find(2)->teams->toArray()
-    );
+    $fixtures = new \App\Models\Fixture;
+    $fixtures = $fixtures->where('team_a');
+    dd($fixtures->get()->toArray());
     return view('welcome');
 });
