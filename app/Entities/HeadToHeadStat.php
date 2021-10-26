@@ -29,79 +29,16 @@ class HeadToHeadStat
     /**
      * @Field()
      */
-    public function getAHomeGoals(): int
+    public function teamA(): HeadToHeadTeam
     {
-        return $this->aHomeGoals;
-    }
-    /**
-     * @Field()
-     */
-    public function getBHomeGoals(): int
-    {
-        return $this->bHomeGoals;
+        return $this->teamA;
     }
 
     /**
      * @Field()
      */
-    public function getAGoals(): int
+    public function teamB(): HeadToHeadTeam
     {
-        return $this->aGoals;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getBGoals(): int
-    {
-        return $this->bGoals;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getAHomeWins(): int
-    {
-        return $this->aHomeWins;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getBHomeWins(): int
-    {
-        return $this->bHomeWins;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getAWins(): int
-    {
-        return $this->aWins;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getBWins(): int
-    {
-        return $this->bWins;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getACleanSheets(): int
-    {
-        return $this->aCleanSheets;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getBCleanSheets(): int
-    {
-        return $this->bCleanSheets;
+        return $this->teamB;
     }
 }

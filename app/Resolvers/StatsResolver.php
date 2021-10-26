@@ -5,6 +5,7 @@ namespace App\Resolvers;
 use Hashids;
 use App\Models\Team;
 use App\Entities\HeadToHeadStat;
+use App\Entities\HeadToHeadTeam;
 use App\Models\Game;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
@@ -17,39 +18,55 @@ class StatsResolver
      */
     public function headToHead(string $teamA, string $teamB): HeadToHeadStat
     {
+        // todo: validate teams exist
         $idA = Hashids::decode($teamA);
         $idB = Hashids::decode($teamB);
         $headToHead = new HeadToHeadStat;
-        $aHomeGames = Game::headTohead($idA, $idB)->count();
-        $bHomeGames = Game::headTohead($idB, $idA)->count();
+        $teamA = new HeadToHeadTeam;
+        $teamB = new HeadToHeadTeam;
+        $homeGamesA = Game::headTohead($idA, $idB)->count();
+        $homeGamesB = Game::headTohead($idB, $idA)->count();
 
-        // a home stats
-        $aAwayGoals = Game::headTohead($idB, $idA)->sum('team_2_score');
-        $headToHead->aHomeGoals = Game::headTohead($idA, $idB)->sum('team_1_score');
-        $headToHead->aHomeWins = Game::headTohead($idA, $idB)->whereColumn('team_1_score', '>', 'team_2_score')->count();
-        $aHomeDraws = Game::headTohead($idA, $idB)->whereColumn('team_1_score', 'team_2_score')->count();
-        $aHomeCleanSheets = Game::headTohead($idA, $idB)->where('team_2_score', 0)->count();
-        $aAwayCleanSheets = Game::headTohead($idB, $idA)->where('team_1_score', 0)->count();
-        $headToHead->aCleanSheets = $aHomeCleanSheets + $aAwayCleanSheets;
-        $bAwayWins = $aHomeGames - $aHomeDraws - $headToHead->aHomeWins;
+        // teamA home stats
+        $homeGoalsA = Game::headTohead($idA, $idB)->sum('team_1_score');
+        $awayGoalsA = Game::headTohead($idB, $idA)->sum('team_2_score');
+        $homeWinsA = Game::headTohead($idA, $idB)->whereColumn('team_1_score', '>', 'team_2_score')->count();
+        $awayWinsA = Game::headTohead($idB, $idA)->whereColumn('team_1_score', '<', 'team_2_score')->count();
+        $homeDrawsA = Game::headTohead($idA, $idB)->whereColumn('team_1_score', 'team_2_score')->count();
+        $homeCleanSheetsA = Game::headTohead($idA, $idB)->where('team_2_score', 0)->count();
+        $awayCleanSheetsA = Game::headTohead($idB, $idA)->where('team_1_score', 0)->count();
+        $cleanSheetsA = $homeCleanSheetsA + $awayCleanSheetsA;
 
-        // b home stats
-        $bAwayGoals = Game::headTohead($idA, $idB)->sum('team_2_score');
-        $headToHead->bHomeGoals = Game::headTohead($idB, $idA)->sum('team_1_score');
-        $headToHead->bHomeWins = Game::headTohead($idB, $idA)->whereColumn('team_1_score', '>', 'team_2_score')->count();
-        $bHomeDraws = Game::headTohead($idB, $idA)->whereColumn('team_1_score', 'team_2_score')->count();
-        $bHomeCleanSheets = Game::headTohead($idB, $idA)->where('team_2_score', 0)->count();
-        $bAwayCleanSheets = Game::headTohead($idA, $idB)->where('team_1_score', 0)->count();
-        $headToHead->bCleanSheets = $bHomeCleanSheets + $bAwayCleanSheets;
-        $aAwayWins = $bHomeGames - $bHomeDraws - $headToHead->bHomeWins;
+        // teamB home stats
+        $homeGoalsB = Game::headTohead($idB, $idA)->sum('team_1_score');
+        $awayGoalsB = Game::headTohead($idA, $idB)->sum('team_2_score');
+        $homeWinsB = Game::headTohead($idB, $idA)->whereColumn('team_1_score', '>', 'team_2_score')->count();
+        $awayWinsB = Game::headTohead($idA, $idB)->whereColumn('team_1_score', '<', 'team_2_score')->count();
+        $homeDrawsB = Game::headTohead($idB, $idA)->whereColumn('team_1_score', 'team_2_score')->count();
+        $homeCleanSheetsB = Game::headTohead($idB, $idA)->where('team_2_score', 0)->count();
+        $awayCleanSheetsB = Game::headTohead($idA, $idB)->where('team_1_score', 0)->count();
+        $cleanSheetsB = $homeCleanSheetsB + $awayCleanSheetsB;
 
-        // combined stats
-        $headToHead->aGoals = $headToHead->aHomeGoals + $aAwayGoals;
-        $headToHead->bGoals = $headToHead->bHomeGoals + $bAwayGoals;
-        $headToHead->aWins = $headToHead->aHomeWins + $aAwayWins;
-        $headToHead->bWins = $headToHead->bHomeWins + $bAwayWins;
-        $headToHead->draws = $aHomeDraws + $bHomeDraws;
+        // COMBINED STATS
         $headToHead->played = Game::headTohead($idA, $idB)->count() + Game::headTohead($idB, $idA)->count();
+        $headToHead->draws = $homeDrawsA + $homeDrawsB;
+
+
+        // teamA data
+        $teamA->homeWins = $homeWinsA;
+        $teamA->wins = $homeWinsA + $awayWinsA;
+        $teamA->homeGoals = $homeGoalsA;
+        $teamA->goals = $homeGoalsA + $awayGoalsA;
+        $teamA->cleanSheets = $cleanSheetsA;
+        // teamB data/
+        $teamB->homeWins = $homeWinsB;
+        $teamB->wins = $homeWinsB + $awayWinsB;
+        $teamB->homeGoals = $homeGoalsB;
+        $teamB->goals = $homeGoalsB + $awayGoalsB;
+        $teamB->cleanSheets = $cleanSheetsB;
+
+        $headToHead->teamA = $teamA;
+        $headToHead->teamB = $teamB;
 
         return $headToHead;
     }
