@@ -17,10 +17,10 @@ class CreateGamesTable extends Migration
             $table->id();
             $table->integer('community_id');
             $table->integer('tournament_id')->nullable();
-            $table->integer('team_a_id');
-            $table->integer('team_a_score');
-            $table->integer('team_b_id');
-            $table->integer('team_b_score');
+            $table->integer('team_1_id');
+            $table->integer('team_1_score');
+            $table->integer('team_2_id');
+            $table->integer('team_2_score');
             $table->timestamps();
         });
     }

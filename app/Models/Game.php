@@ -24,6 +24,14 @@ class Game extends Model
         return $this->belongsTo(Team::class, 'team_b_id');
     }
 
+    public function scopeHeadToHead($query, $idA, $idB)
+    {
+        return $query->where([
+            ['team_1_id', $idA],
+            ['team_2_id', $idB]
+        ]);
+    }
+
     /*
      |--------------------------------------------------------------------------
      | GraphQLite Fields
