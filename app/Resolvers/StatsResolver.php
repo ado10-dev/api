@@ -24,8 +24,6 @@ class StatsResolver
         $headToHead = new HeadToHeadStat;
         $teamA = new HeadToHeadTeam;
         $teamB = new HeadToHeadTeam;
-        $homeGamesA = Game::headTohead($idA, $idB)->count();
-        $homeGamesB = Game::headTohead($idB, $idA)->count();
 
         // teamA home stats
         $homeGoalsA = Game::headTohead($idA, $idB)->sum('team_1_score');
@@ -51,20 +49,20 @@ class StatsResolver
         $headToHead->played = Game::headTohead($idA, $idB)->count() + Game::headTohead($idB, $idA)->count();
         $headToHead->draws = $homeDrawsA + $homeDrawsB;
 
-
         // teamA data
         $teamA->homeWins = $homeWinsA;
         $teamA->wins = $homeWinsA + $awayWinsA;
         $teamA->homeGoals = $homeGoalsA;
         $teamA->goals = $homeGoalsA + $awayGoalsA;
         $teamA->cleanSheets = $cleanSheetsA;
-        // teamB data/
+        // teamB data
         $teamB->homeWins = $homeWinsB;
         $teamB->wins = $homeWinsB + $awayWinsB;
         $teamB->homeGoals = $homeGoalsB;
         $teamB->goals = $homeGoalsB + $awayGoalsB;
         $teamB->cleanSheets = $cleanSheetsB;
 
+        // finish off
         $headToHead->teamA = $teamA;
         $headToHead->teamB = $teamB;
 
