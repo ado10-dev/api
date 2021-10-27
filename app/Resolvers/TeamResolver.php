@@ -10,25 +10,31 @@ use Illuminate\Http\Request;
 class TeamResolver
 {
     /**
-     * Display a listing of the resource.
-     * 
      * @Query
      * @return Team[]
      */
-    public function teams(string $communityId): \Illuminate\Database\Eloquent\Collection
+    public function teams(string $associationId): \Illuminate\Database\Eloquent\Collection
     {
-        $decodedId = Hashids::decode($communityId);
-        return Team::where('community_id', $decodedId)->get();
+        $decodedId = Hashids::decode($associationId);
+        return Team::where('association_id', $decodedId)->get();
     }
 
     /**
-     * Display the specified resource.
-     *
      * @Query
      */
     public function team(string $id): ?Team
     {
         $decodedId = Hashids::decode($id);
         return Team::find($decodedId)->first();
+    }
+
+    /**
+     * @Query
+     */
+    public function updateTeam(string $id): ?Team
+    {
+        $decodedId = Hashids::decode($id);
+        $team = Team::find($decodedId)->first();
+        if (!$team) return null;
     }
 }

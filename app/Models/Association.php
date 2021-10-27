@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @Type()
  * @MagicField(name="teams", phpType="Team[]")
  */
-class Community extends Model
+class Association extends Model
 {
     use HasFactory;
 
@@ -26,7 +26,7 @@ class Community extends Model
     ];
 
     /**
-     * The community's teams
+     * The association's teams
      */
     public function teams()
     {
