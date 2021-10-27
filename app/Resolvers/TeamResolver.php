@@ -2,10 +2,13 @@
 
 namespace App\Resolvers;
 
-use App\Entities\TeamInput;
 use Hashids;
+use App\Entities\TeamInput;
+use App\Models\Association;
 use App\Models\Team;
+use TheCodingMachine\GraphQLite\Annotations\UseInputType;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Mutation;
 
 class TeamResolver
 {
@@ -29,14 +32,18 @@ class TeamResolver
     }
 
     /**
-     * @Query
+     * @Mutation
      */
-    public function createTeam(TeamInput $data): ?Team
+    public function createTeam(string $associationId, TeamInput $data): ?Team
     {
-        $team = new Team;
+        $decodedId = Hashids::decode($associationId);
+        $association = Association::find($decodedId)->first();
+        if (!$association) return null;
 
+        $team = new Team;
+        $team->association_id = $association->id;
         if ($data->name) $team->name = $data->name;
-        if (!is_null($data->description)) $team->description = $data->description;
+        if (!is_null($data->user_id)) $team->user_id = Hashids::decode($data->user_id)[0];
 
         $team->save();
         return $team;

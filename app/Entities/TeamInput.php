@@ -23,12 +23,12 @@ class TeamInput
    * @Field(inputType="String")
    * @var string
    */
-  public $description;
+  public $user_id;
 
-  public function __construct(string $name = null, string $description = null)
+  public function __construct(string $name = null, string $user_id = null)
   {
     $this->name = $name;
-    $this->description = $description;
+    $this->user_id = $user_id;
   }
 
   public function getName(): string
@@ -36,8 +36,8 @@ class TeamInput
     return $this->name;
   }
 
-  public function getDescription(): string
+  public function getUser_id(): string
   {
-    return $this->description;
+    return $this->user_id;
   }
 }
