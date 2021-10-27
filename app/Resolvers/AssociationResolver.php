@@ -42,4 +42,19 @@ class AssociationResolver
         $association->save();
         return $association;
     }
+
+    /**
+     * @Mutation
+     */
+    public function deleteAssociation(string $id): bool
+    {
+        $decodedId = Hashids::decode($id);
+        $association = Association::find($decodedId)->first();
+        if (!$association) return false;
+
+        $association->teams()->delete();
+        $association->games()->delete();
+
+        return $association->delete();
+    }
 }

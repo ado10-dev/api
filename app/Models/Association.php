@@ -33,6 +33,14 @@ class Association extends Model
         return $this->hasMany(Team::class);
     }
 
+    /**
+     * The association's games
+     */
+    public function games()
+    {
+        return $this->hasMany(Game::class);
+    }
+
     /*
      |--------------------------------------------------------------------------
      | GraphQLite Fields
