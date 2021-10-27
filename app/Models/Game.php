@@ -4,24 +4,30 @@ namespace App\Models;
 
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
+use TheCodingMachine\GraphQLite\Annotations\MagicField;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @Type()
+ * @MagicField(name="homeTeam", phpType="Team")
+ * @MagicField(name="awayTeam", phpType="Team")
  */
 class Game extends Model
 {
     use HasFactory;
 
-    public function teamA()
+    /**
+     * Get game team 
+     */
+    public function homeTeam()
     {
-        return $this->belongsTo(Team::class, 'team_a_id');
+        return $this->belongsTo(Team::class, 'team_1_id');
     }
 
-    public function teamB()
+    public function awayTeam()
     {
-        return $this->belongsTo(Team::class, 'team_b_id');
+        return $this->belongsTo(Team::class, 'team_2_id');
     }
 
     public function scopeHeadToHead($query, $idA, $idB)
@@ -54,32 +60,16 @@ class Game extends Model
     /**
      * @Field()
      */
-    public function getTeamAid(): string
+    public function getHomeScore(): int
     {
-        return \Hashids::encode($this->team_a_id);
+        return $this->team_1_score;
     }
 
     /**
      * @Field()
      */
-    public function getTeamBid(): string
+    public function getAwayScore(): int
     {
-        return \Hashids::encode($this->team_b_id);
-    }
-
-    /**
-     * @Field()
-     */
-    public function getScoreA(): int
-    {
-        return $this->team_a_score;
-    }
-
-    /**
-     * @Field()
-     */
-    public function getScoreB(): int
-    {
-        return $this->team_b_score;
+        return $this->team_2_score;
     }
 }
