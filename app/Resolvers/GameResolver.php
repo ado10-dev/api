@@ -53,4 +53,15 @@ class GameResolver
         $game->save();
         return $game;
     }
+
+    /**
+     * @Mutation
+     */
+    public function deleteGame(string $id): bool
+    {
+        $decodedId = Hashids::decode($id);
+        $game = Game::find($decodedId)->first();
+        if (!$game) return false;
+        return $game->delete();
+    }
 }
