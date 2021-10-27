@@ -32,6 +32,11 @@ class Game extends Model
         ]);
     }
 
+    public function scopeWithTeam($query, $id)
+    {
+        return $query->where('team_1_id', $id)->orWhere('team_2_id', $id);
+    }
+
     /*
      |--------------------------------------------------------------------------
      | GraphQLite Fields

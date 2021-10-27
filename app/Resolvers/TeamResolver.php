@@ -5,6 +5,7 @@ namespace App\Resolvers;
 use Hashids;
 use App\Entities\TeamInput;
 use App\Models\Association;
+use App\Models\Game;
 use App\Models\Team;
 use TheCodingMachine\GraphQLite\Annotations\UseInputType;
 use TheCodingMachine\GraphQLite\Annotations\Query;
@@ -66,5 +67,17 @@ class TeamResolver
 
         $team->save();
         return $team;
+    }
+
+    /**
+     * @Mutation
+     */
+    public function deleteTeam(string $id): bool
+    {
+        $decodedId = Hashids::decode($id);
+        $team = Team::find($decodedId)->first();
+        if (!$team) return false;
+        Game::withTeam($decodedId)->delete();
+        return $team->delete();
     }
 }
