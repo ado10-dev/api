@@ -2,10 +2,10 @@
 
 namespace App\Resolvers;
 
+use App\Entities\TeamInput;
 use Hashids;
 use App\Models\Team;
 use TheCodingMachine\GraphQLite\Annotations\Query;
-use Illuminate\Http\Request;
 
 class TeamResolver
 {
@@ -31,10 +31,14 @@ class TeamResolver
     /**
      * @Query
      */
-    public function updateTeam(string $id): ?Team
+    public function createTeam(TeamInput $data): ?Team
     {
-        $decodedId = Hashids::decode($id);
-        $team = Team::find($decodedId)->first();
-        if (!$team) return null;
+        $team = new Team;
+
+        if ($data->name) $team->name = $data->name;
+        if (!is_null($data->description)) $team->description = $data->description;
+
+        $team->save();
+        return $team;
     }
 }
