@@ -3,17 +3,16 @@
 namespace App\Resolvers;
 
 use Hashids;
-use App\Models\Team;
+use App\Entities\TeamStanding;
 use App\Entities\HeadToHeadStat;
 use App\Entities\HeadToHeadTeam;
+use App\Models\Association;
 use App\Models\Game;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class StatsResolver
 {
     /**
-     * Display a listing of the resource.
-     * 
      * @Query
      */
     public function headToHead(string $teamA, string $teamB): HeadToHeadStat
@@ -67,5 +66,66 @@ class StatsResolver
         $headToHead->teamB = $teamB;
 
         return $headToHead;
+    }
+
+    /**
+     * @Query
+     * @return TeamStanding[]
+     */
+    public function allTimeStandings(string $associationId)
+    {
+        $decodedId = Hashids::decode($associationId);
+        $association = Association::find($decodedId)->first();
+        if (!$association) {
+            throw new \Exception("Association not found", 1);
+        }
+
+        $standings = [];
+        $teams = $association->teams;
+        foreach ($teams as $team) {
+            $standings[] = $this->teamStandings($team);
+        }
+
+        return $standings;
+    }
+
+    /**
+     * Get a team's standings
+     * 
+     * @param App\Models\Team
+     * @return App\Entities\TeamStanding
+     */
+    public function teamStandings($team)
+    {
+        $games = new Game;
+        $standings = new TeamStanding;
+        $standings->team = $team;
+        $standings->played = $games->where('team_1_id', $team->id)
+            ->orWhere('team_2_id', $team->id)
+            ->count();
+        $standings->wins = $games->where('team_1_id', $team->id)
+            ->whereColumn('team_1_score', '>', 'team_2_score')
+            ->orWhere('team_2_id', $team->id)
+            ->whereColumn('team_2_score', '>', 'team_1_score')
+            ->count();
+        $standings->draws = $games->where('team_1_id', $team->id)
+            ->whereColumn('team_1_score', 'team_2_score')
+            ->orWhere('team_2_id', $team->id)
+            ->whereColumn('team_2_score', 'team_1_score')
+            ->count();
+        $standings->losses = $standings->played - $standings->wins - $standings->draws;
+        $homeGoals = $games->where('team_1_id', $team->id)->sum('team_1_score');
+        $awayGoals = $games->where('team_2_id', $team->id)->sum('team_2_score');
+        $standings->scored = $homeGoals + $awayGoals;
+        $homeConceded = $games->where('team_1_id', $team->id)->sum('team_2_score');
+        $awayConceded = $games->where('team_2_id', $team->id)->sum('team_1_score');
+        $standings->conceded = $homeConceded + $awayConceded;
+        $standings->aggregate = $standings->scored - $standings->conceded;
+        $homeCleanSheets = $games->where('team_1_id', $team->id)->where('team_2_score', 0)->count();
+        $awayCleanSheets = $games->where('team_2_id', $team->id)->where('team_1_score', 0)->count();
+        $standings->cleanSheets = $homeCleanSheets + $awayCleanSheets;
+        $standings->points = ($standings->wins * 3) + $standings->draws;
+
+        return $standings;
     }
 }
