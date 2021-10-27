@@ -18,6 +18,20 @@ class Game extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'association_id',
+        'tournament_id',
+        'team_1_id',
+        'team_2_id',
+        'team_1_score',
+        'team_2_score'
+    ];
+
+    /**
      * Get game team 
      */
     public function homeTeam()
