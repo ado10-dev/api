@@ -23,6 +23,14 @@ class Team extends Model
         'name',
     ];
 
+    /**
+     * Get the user linked to the team
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /*
      |--------------------------------------------------------------------------
      | GraphQLite Fields

@@ -48,4 +48,23 @@ class TeamResolver
         $team->save();
         return $team;
     }
+
+    /**
+     * @Mutation
+     * @UseInputType(for="$data", inputType="UpdateTeamInput!")
+     */
+    public function updateTeam(string $id, TeamInput $data): ?Team
+    {
+        $decodedId = Hashids::decode($id);
+        $team = Team::find($decodedId)->first();
+        if (!$team) return null;
+
+        if ($data->name) $team->name = $data->name;
+        if (!is_null($data->user_id)) {
+            $team->user_id = ($data->user_id == "") ? null : Hashids::decode($data->user_id)[0];
+        }
+
+        $team->save();
+        return $team;
+    }
 }
