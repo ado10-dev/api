@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $games = new \App\Models\Game;
+    $games = $games->where('team_a_id', 1);
+    dd($games->first()->teamA);
+    dd($games->get()->toArray());
     return view('welcome');
 });
