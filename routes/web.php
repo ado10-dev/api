@@ -18,5 +18,5 @@ Route::get('/', function () {
     $games = $games->where('team_a_id', 1);
     dd($games->first()->teamA);
     dd($games->get()->toArray());
-    return view('welcome');
+    //return view('welcome');
 });

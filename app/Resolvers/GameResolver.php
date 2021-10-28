@@ -15,10 +15,10 @@ class GameResolver
      * @Query
      * @return Game[]
      */
-    public function games(string $communityId): \Illuminate\Database\Eloquent\Collection
+    public function games(string $associationId): \Illuminate\Database\Eloquent\Collection
     {
-        $decodedId = Hashids::decode($communityId);
-        return Game::where('community_id', $decodedId)->get();
+        $decodedId = Hashids::decode($associationId);
+        return Game::where('association_id', $decodedId)->get();
     }
 
     /**
