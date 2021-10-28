@@ -14,6 +14,23 @@ class Team extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string[]
+     */
+    protected $fillable = [
+        'name',
+    ];
+
+    /**
+     * Get the user linked to the team
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /*
      |--------------------------------------------------------------------------
      | GraphQLite Fields
