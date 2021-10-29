@@ -16,10 +16,16 @@ class GameResolver
      * @Query
      * @return Game[]
      */
-    public function games(string $associationId): \Illuminate\Database\Eloquent\Collection
+    public function games(string $associationId, ?int $limit): \Illuminate\Database\Eloquent\Collection
     {
         $decodedId = Hashids::decode($associationId);
-        return Game::where('association_id', $decodedId)->get();
+        $games = Game::where('association_id', $decodedId);
+
+        if ($limit) {
+            $games = $games->limit($limit);
+        }
+
+        return $games->get();
     }
 
     /**
